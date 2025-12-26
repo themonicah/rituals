@@ -149,6 +149,69 @@ function calcStreak(name) {
     return streak;
 }
 
+// Cute icons for common rituals
+const RITUAL_ICONS = {
+    // Exercise/movement
+    'moving my body': '🏃',
+    'exercise': '💪',
+    'workout': '🏋️',
+    'run': '🏃',
+    'running': '🏃',
+    'walk': '🚶',
+    'walking': '🚶',
+    'yoga': '🧘',
+    'stretch': '🤸',
+    'gym': '🏋️',
+    // Creative
+    'draw': '🎨',
+    'drawing': '🎨',
+    'paint': '🖌️',
+    'write': '✍️',
+    'writing': '✍️',
+    'journal': '📔',
+    'read': '📚',
+    'reading': '📖',
+    'music': '🎵',
+    'practice': '🎯',
+    // Self-care
+    'meditate': '🧘',
+    'meditation': '🧘',
+    'sleep': '😴',
+    'water': '💧',
+    'skincare': '✨',
+    // Work/productivity
+    'work': '💼',
+    'study': '📝',
+    'code': '💻',
+    'coding': '💻',
+    'learn': '🎓',
+    'language': '🗣️',
+    // Social
+    'call': '📞',
+    'family': '👨‍👩‍👧',
+    'friends': '👋',
+    // Other
+    'mascot': '🐱',
+    'pet': '🐕',
+    'clean': '🧹',
+    'cook': '🍳',
+    'eat healthy': '🥗',
+    'no phone': '📵',
+    'gratitude': '🙏',
+    'default': '⭐'
+};
+
+function getRitualIcon(name) {
+    const lower = name.toLowerCase();
+    // Check for exact match
+    if (RITUAL_ICONS[lower]) return RITUAL_ICONS[lower];
+    // Check for partial match
+    for (const [key, icon] of Object.entries(RITUAL_ICONS)) {
+        if (lower.includes(key) || key.includes(lower)) return icon;
+    }
+    return RITUAL_ICONS['default'];
+}
+
 function renderChecklist() {
     const d = new Date(selectedDate + 'T12:00:00');
     const today = getDateStr(new Date());
@@ -161,17 +224,17 @@ function renderChecklist() {
 
     const completed = data.completions[selectedDate] || [];
 
-    checklistEl.innerHTML = data.rituals.map((r, i) => {
+    checklistEl.innerHTML = '<div class="checklist-grid">' + data.rituals.map((r, i) => {
         const done = completed.includes(r.name);
-        const color = getColor(i);
+        const icon = getRitualIcon(r.name);
         return `
             <div class="checklist-item ${done ? 'done' : ''}" data-name="${r.name}">
-                <div class="checklist-check ${done ? 'done' : ''}"
-                    style="border-color: ${color}; ${done ? `background: ${color}` : ''}"></div>
-                <span class="checklist-name">${r.name}</span>
+                <div class="checklist-icon">${icon}</div>
+                <div class="checklist-name">${r.name}</div>
+                <div class="checklist-check ${done ? 'done' : ''}"></div>
             </div>
         `;
-    }).join('');
+    }).join('') + '</div>';
 }
 
 function renderCalendar() {
@@ -223,11 +286,12 @@ function renderWeekView() {
 
         const dots = data.rituals.map((r, idx) => {
             const done = completed.includes(r.name);
-            return `<div class="dot ${done ? 'done' : ''}" style="background: ${getColor(idx)}"></div>`;
+            return done ? `<div class="dot done" style="background: ${getColor(idx)}"></div>` : '';
         }).join('');
 
+        const isSelected = str === selectedDate;
         html += `
-            <div class="day ${isToday ? 'today' : ''} ${isPerfect ? 'perfect' : ''} ${isChained ? 'chained' : ''}" data-date="${str}">
+            <div class="day ${isToday ? 'today' : ''} ${isPerfect ? 'perfect' : ''} ${isChained ? 'chained' : ''} ${isSelected ? 'selected' : ''}" data-date="${str}">
                 <div class="day-name">${dayNames[d.getDay()]}</div>
                 <div class="day-num">${d.getDate()}</div>
                 <div class="day-dots">${dots}</div>
@@ -278,11 +342,12 @@ function renderMonthView() {
 
         const dots = data.rituals.map((r, idx) => {
             const done = completed.includes(r.name);
-            return `<div class="dot ${done ? 'done' : ''}" style="background: ${getColor(idx)}"></div>`;
+            return done ? `<div class="dot done" style="background: ${getColor(idx)}"></div>` : '';
         }).join('');
 
+        const isSelected = str === selectedDate;
         html += `
-            <div class="day ${isToday ? 'today' : ''} ${isPerfect ? 'perfect' : ''}" data-date="${str}">
+            <div class="day ${isToday ? 'today' : ''} ${isPerfect ? 'perfect' : ''} ${isSelected ? 'selected' : ''}" data-date="${str}">
                 <div class="day-num">${d}</div>
                 <div class="day-dots">${dots}</div>
             </div>
@@ -492,6 +557,7 @@ function setupEvents() {
         if (day && day.dataset.date) {
             selectedDate = day.dataset.date;
             renderChecklist();
+            renderCalendar();
         }
     };
 
