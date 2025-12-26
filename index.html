@@ -29,24 +29,18 @@
                 <span id="month-label">December 2025</span>
                 <button id="next" class="nav-btn">›</button>
             </div>
-            <div class="view-toggle">
-                <button class="view-btn active" data-view="week">Week</button>
-                <button class="view-btn" data-view="month">Month</button>
-                <button class="view-btn" data-view="year">Year</button>
+            <div class="view-toggle-wrap">
+                <button id="view-toggle-btn" class="view-toggle-btn"></button>
+                <div class="view-dropdown hidden" id="view-dropdown">
+                    <button class="view-opt active" data-view="week">Week</button>
+                    <button class="view-opt" data-view="month">Month</button>
+                    <button class="view-opt" data-view="year">Year</button>
+                </div>
             </div>
             <div id="calendar"></div>
         </div>
 
-        <!-- Ideas -->
-        <section class="ideas-section">
-            <div class="ideas-header">Ideas</div>
-            <div id="ideas"></div>
-            <div class="add-idea">
-                <input type="text" id="idea-input" placeholder="Quick note...">
-                <button id="add-idea-btn">+</button>
-            </div>
-        </section>
-    </div>
+        </div>
 
     <!-- Floating Stats -->
     <div class="floating-stats" id="stats"></div>
