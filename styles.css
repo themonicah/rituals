@@ -232,8 +232,8 @@ h1 {
 }
 
 .checklist-item.done {
-    border-color: var(--blue);
-    background: rgba(28, 176, 246, 0.08);
+    border-color: var(--ritual-color);
+    background: var(--ritual-bg);
 }
 
 .checklist-item.just-checked {
@@ -275,7 +275,7 @@ h1 {
 }
 
 .checklist-item.done .checklist-name {
-    color: var(--blue);
+    color: var(--ritual-color);
 }
 
 .checklist-check {
@@ -291,8 +291,8 @@ h1 {
 }
 
 .checklist-item.done .checklist-check {
-    background: var(--blue);
-    border-color: var(--blue);
+    background: var(--ritual-color);
+    border-color: var(--ritual-color);
 }
 
 .checklist-check.done::after {

@@ -228,8 +228,12 @@ function renderChecklist() {
         const done = completed.includes(r.name);
         const icon = getRitualIcon(r.name);
         const justChecked = justCheckedRitual === r.name;
+        const color = getColor(i);
+        const bgColor = hexToRgba(color, 0.1);
         return `
-            <div class="checklist-item ${done ? 'done' : ''} ${justChecked ? 'just-checked' : ''}" data-name="${r.name}">
+            <div class="checklist-item ${done ? 'done' : ''} ${justChecked ? 'just-checked' : ''}"
+                 data-name="${r.name}"
+                 style="${done ? `--ritual-color: ${color}; --ritual-bg: ${bgColor}` : ''}">
                 <div class="checklist-icon">${icon}</div>
                 <div class="checklist-name">${r.name}</div>
                 <div class="checklist-check ${done ? 'done' : ''}"></div>
