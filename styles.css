@@ -5,446 +5,206 @@
 }
 
 :root {
-    --color-1: #FF6B6B;
-    --color-2: #4ECDC4;
-    --color-3: #9B59B6;
-    --color-4: #F39C12;
-    --color-5: #3498DB;
-    --color-6: #2ECC71;
-    --bg-color: #F8F9FA;
-    --card-bg: #FFFFFF;
-    --text-primary: #2C3E50;
-    --text-secondary: #95A5A6;
-    --border-color: #ECF0F1;
+    --green: #58CC02;
+    --green-dark: #46A302;
+    --blue: #1CB0F6;
+    --orange: #FF9600;
+    --red: #FF4B4B;
+    --purple: #CE82FF;
+    --pink: #FF86D0;
+    --yellow: #FFC800;
+    --bg: #131F24;
+    --card: #1A2C34;
+    --card-hover: #223D47;
+    --text: #FFFFFF;
+    --text-dim: #8B9DA5;
+    --border: #37464F;
 }
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--bg-color);
-    color: var(--text-primary);
-    line-height: 1.5;
+    background: var(--bg);
+    color: var(--text);
     min-height: 100vh;
 }
 
-.container {
-    max-width: 800px;
+.app {
+    max-width: 500px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 16px;
 }
 
 /* Header */
 header {
     display: flex;
     align-items: center;
-    gap: 16px;
-    margin-bottom: 24px;
-}
-
-.header-left {
-    flex-shrink: 0;
+    gap: 12px;
+    margin-bottom: 20px;
 }
 
 h1 {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    background: linear-gradient(135deg, var(--color-1), var(--color-3));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--green);
 }
 
-/* Streak Flames - Duolingo style */
-.streak-flames {
+.streaks {
     display: flex;
-    gap: 12px;
+    gap: 8px;
     flex: 1;
     justify-content: center;
 }
 
-.streak-flame {
+.streak {
     display: flex;
     align-items: center;
     gap: 4px;
-    padding: 6px 12px;
-    background: var(--card-bg);
-    border-radius: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    padding: 4px 10px;
+    background: var(--card);
+    border-radius: 16px;
+    cursor: default;
+    position: relative;
 }
 
-.streak-flame .flame-icon {
-    font-size: 1.2rem;
-}
-
-.streak-flame .flame-count {
-    font-weight: 700;
-    font-size: 0.95rem;
-}
-
-.streak-flame.inactive {
+.streak.inactive {
     opacity: 0.4;
 }
 
-.streak-flame.inactive .flame-icon {
-    filter: grayscale(1);
+.streak-icon {
+    font-size: 1rem;
 }
 
-.settings-btn {
-    background: var(--card-bg);
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-secondary);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    transition: all 0.2s;
+.streak-count {
+    font-weight: 700;
+    font-size: 0.9rem;
 }
 
-.settings-btn:hover {
-    color: var(--color-3);
-    transform: rotate(45deg);
-}
-
-/* Calendar - Hero Section */
-.calendar-section {
-    background: var(--card-bg);
-    border-radius: 20px;
-    padding: 24px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    margin-bottom: 20px;
-}
-
-.calendar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 24px;
-    margin-bottom: 16px;
-}
-
-.calendar-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.view-toggle {
-    display: flex;
-    background: var(--bg-color);
-    border-radius: 8px;
-    padding: 3px;
-}
-
-.view-btn {
-    background: none;
-    border: none;
-    padding: 6px 14px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--text-secondary);
-    cursor: pointer;
+.streak-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text);
+    color: var(--bg);
+    padding: 4px 8px;
     border-radius: 6px;
-    transition: all 0.2s;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    margin-bottom: 4px;
 }
 
-.view-btn:hover {
-    color: var(--text-primary);
+.streak:hover .streak-tooltip {
+    opacity: 1;
 }
 
-.view-btn.active {
-    background: var(--card-bg);
-    color: var(--text-primary);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+.icon-btn {
+    background: var(--card);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.icon-btn:hover {
+    background: var(--card-hover);
+}
+
+/* Calendar */
+.calendar-container {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
 }
 
 .calendar-nav {
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: space-between;
+    margin-bottom: 12px;
 }
 
-#current-month {
+#month-label {
+    font-weight: 600;
     font-size: 0.95rem;
-    font-weight: 600;
-    min-width: 120px;
-    text-align: center;
-}
-
-/* Daily Panel - integrated into calendar */
-.daily-panel {
-    flex: 1;
-    max-width: 280px;
-}
-
-.daily-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-#selected-date {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-}
-
-.completion-badge {
-    background: var(--color-6);
-    color: white;
-    font-size: 0.65rem;
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 10px;
-}
-
-.completion-badge.hidden {
-    display: none;
-}
-
-#rituals-list {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.ritual-item {
-    display: flex;
-    align-items: center;
-    padding: 8px 12px;
-    border-radius: 8px;
-    background: var(--bg-color);
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.ritual-item:hover {
-    transform: translateX(2px);
-}
-
-.ritual-checkbox {
-    width: 18px;
-    height: 18px;
-    border-radius: 5px;
-    border: 2px solid;
-    margin-right: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    flex-shrink: 0;
-}
-
-.ritual-checkbox.checked {
-    color: white;
-}
-
-.ritual-checkbox.checked::after {
-    content: '\2713';
-    font-size: 10px;
-    font-weight: bold;
-}
-
-.ritual-name {
-    font-size: 0.85rem;
-    font-weight: 500;
-}
-
-.ritual-item.completed .ritual-name {
-    text-decoration: line-through;
-    opacity: 0.5;
-}
-
-/* Week View */
-.week-view {
-    display: flex;
-    gap: 8px;
-}
-
-.week-day {
-    flex: 1;
-    padding: 12px 8px;
-    background: var(--bg-color);
-    border-radius: 12px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.week-day:hover {
-    transform: translateY(-2px);
-}
-
-.week-day.today {
-    background: linear-gradient(135deg, rgba(255,107,107,0.15), rgba(78,205,196,0.15));
-}
-
-.week-day.selected {
-    box-shadow: inset 0 0 0 2px var(--color-2);
-}
-
-.week-day.perfect {
-    background: linear-gradient(135deg, rgba(46,204,113,0.2), rgba(78,205,196,0.2));
-}
-
-.week-day-name {
-    font-size: 0.7rem;
-    color: var(--text-secondary);
-    margin-bottom: 4px;
-}
-
-.week-day-num {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 6px;
-}
-
-.week-day.today .week-day-num {
-    color: var(--color-1);
-}
-
-.week-day-dots {
-    display: flex;
-    justify-content: center;
-    gap: 3px;
-}
-
-/* Month View */
-.month-view.hidden,
-.week-view.hidden,
-.year-view.hidden {
-    display: none;
-}
-
-/* Year View */
-.year-view {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-}
-
-.year-month {
-    padding: 12px;
-    background: var(--bg-color);
-    border-radius: 10px;
-}
-
-.year-month-name {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-    margin-bottom: 8px;
-}
-
-.year-month-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 2px;
-}
-
-.year-day {
-    width: 100%;
-    aspect-ratio: 1;
-    border-radius: 2px;
-    background: var(--border-color);
-}
-
-.year-day.has-data {
-    opacity: 0.3;
-}
-
-.year-day.partial {
-    opacity: 0.6;
-}
-
-.year-day.perfect {
-    opacity: 1;
 }
 
 .nav-btn {
-    background: var(--bg-color);
+    background: none;
     border: none;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    font-size: 1rem;
+    color: var(--text);
+    font-size: 1.5rem;
     cursor: pointer;
-    color: var(--text-secondary);
-    transition: all 0.2s;
+    padding: 4px 12px;
+    border-radius: 8px;
+    transition: background 0.2s;
 }
 
 .nav-btn:hover {
-    background: var(--color-2);
-    color: white;
+    background: var(--card-hover);
 }
 
-.calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
+.week-row {
+    display: flex;
+    gap: 6px;
 }
 
-.day-header {
-    text-align: center;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-    padding: 8px 0;
-}
-
-#calendar-days {
-    display: contents;
-}
-
-.calendar-day {
+.day {
+    flex: 1;
     aspect-ratio: 1;
+    background: var(--bg);
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s;
-    position: relative;
+    border: 2px solid transparent;
 }
 
-.calendar-day:hover {
-    background: var(--bg-color);
+.day:hover {
+    background: var(--card-hover);
+    transform: scale(1.05);
 }
 
-.calendar-day.empty {
-    cursor: default;
+.day.today {
+    border-color: var(--green);
 }
 
-.calendar-day.empty:hover {
-    background: transparent;
+.day.perfect {
+    background: var(--green);
 }
 
-.calendar-day.selected {
-    background: var(--bg-color);
-    box-shadow: inset 0 0 0 2px var(--color-2);
+.day.perfect:hover {
+    background: var(--green-dark);
 }
 
-.calendar-day.today {
-    background: linear-gradient(135deg, rgba(255,107,107,0.1), rgba(78,205,196,0.1));
+.day-name {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    margin-bottom: 2px;
+    text-transform: uppercase;
 }
 
-.calendar-day.today .day-number {
-    color: var(--color-1);
-    font-weight: 700;
-}
-
-.calendar-day.perfect {
-    background: linear-gradient(135deg, rgba(46,204,113,0.15), rgba(78,205,196,0.15));
-}
-
-.day-number {
-    font-size: 0.9rem;
-    font-weight: 500;
+.day-num {
+    font-size: 1.1rem;
+    font-weight: 600;
     margin-bottom: 4px;
+}
+
+.day.today .day-num {
+    color: var(--green);
+}
+
+.day.perfect .day-num {
+    color: var(--bg);
 }
 
 .day-dots {
@@ -452,133 +212,127 @@ h1 {
     gap: 3px;
 }
 
-.day-dot {
+.dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    opacity: 0.2;
+    opacity: 0.3;
 }
 
-.day-dot.completed {
+.dot.done {
     opacity: 1;
 }
 
-/* Stats Donuts */
-.stats-donuts {
-    display: flex;
-    justify-content: center;
-    gap: 32px;
-    margin-top: 24px;
-    padding-top: 24px;
-    border-top: 1px solid var(--border-color);
+.day.perfect .dot {
+    background: var(--bg) !important;
+    opacity: 0.5;
 }
 
-.donut-stat {
+.day.perfect .dot.done {
+    opacity: 1;
+}
+
+/* Stats */
+.stats-row {
     display: flex;
-    flex-direction: column;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.stat {
+    display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
-.donut-ring {
+.mini-donut {
+    width: 28px;
+    height: 28px;
     position: relative;
-    width: 60px;
-    height: 60px;
 }
 
-.donut-ring svg {
+.mini-donut svg {
     transform: rotate(-90deg);
 }
 
-.donut-ring circle {
+.mini-donut circle {
     fill: none;
-    stroke-width: 6;
+    stroke-width: 4;
 }
 
-.donut-ring .bg {
-    stroke: var(--border-color);
+.mini-donut .bg {
+    stroke: var(--border);
 }
 
-.donut-ring .progress {
+.mini-donut .progress {
     stroke-linecap: round;
-    transition: stroke-dashoffset 0.5s ease;
 }
 
-.donut-percent {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 0.85rem;
-    font-weight: 700;
-}
-
-.donut-label {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    text-align: center;
-    max-width: 70px;
+.stat-label {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    max-width: 50px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-/* Ideas Section */
+/* Ideas */
 .ideas-section {
-    background: var(--card-bg);
+    background: var(--card);
     border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    padding: 12px;
 }
 
-.ideas-section h2 {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-    margin-bottom: 16px;
+.ideas-header {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-#ideas-list {
-    max-height: 200px;
+#ideas {
+    max-height: 150px;
     overflow-y: auto;
 }
 
-.idea-item {
+.idea {
     display: flex;
     align-items: center;
-    padding: 10px 12px;
-    background: var(--bg-color);
+    gap: 10px;
+    padding: 8px 10px;
+    background: var(--bg);
     border-radius: 8px;
     margin-bottom: 6px;
-    transition: all 0.2s;
 }
 
-.idea-item:hover {
-    transform: translateX(2px);
-}
-
-.idea-checkbox {
+.idea-check {
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    border: 2px solid var(--color-4);
-    margin-right: 10px;
+    border: 2px solid var(--orange);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
     flex-shrink: 0;
+    transition: all 0.2s;
 }
 
-.idea-checkbox.checked {
-    background: var(--color-6);
-    border-color: var(--color-6);
+.idea-check:hover {
+    background: rgba(255, 150, 0, 0.2);
 }
 
-.idea-checkbox.checked::after {
-    content: '\2713';
-    color: white;
+.idea-check.done {
+    background: var(--green);
+    border-color: var(--green);
+}
+
+.idea-check.done::after {
+    content: '✓';
+    color: var(--bg);
     font-size: 10px;
     font-weight: bold;
 }
@@ -588,298 +342,290 @@ h1 {
     font-size: 0.85rem;
 }
 
-.idea-age {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    margin-left: 6px;
-}
-
-.idea-item.completed .idea-text {
+.idea.done .idea-text {
     text-decoration: line-through;
     opacity: 0.5;
 }
 
-.idea-item.completed .idea-age {
-    display: none;
+.idea-age {
+    font-size: 0.7rem;
+    color: var(--text-dim);
 }
 
 .idea-delete {
     background: none;
     border: none;
-    color: var(--text-secondary);
+    color: var(--text-dim);
     font-size: 1rem;
     cursor: pointer;
-    padding: 2px 6px;
     opacity: 0;
-    transition: all 0.2s;
+    transition: opacity 0.2s;
 }
 
-.idea-item:hover .idea-delete {
+.idea:hover .idea-delete {
     opacity: 1;
 }
 
 .idea-delete:hover {
-    color: var(--color-1);
+    color: var(--red);
 }
 
-.add-idea-row {
+.add-idea {
     display: flex;
-    gap: 8px;
-    margin-top: 12px;
+    gap: 6px;
+    margin-top: 8px;
 }
 
-.add-idea-row input {
+.add-idea input {
     flex: 1;
+    background: var(--bg);
+    border: none;
     padding: 10px 12px;
-    border: 1px solid var(--border-color);
     border-radius: 8px;
+    color: var(--text);
     font-size: 0.85rem;
 }
 
-.add-idea-row input:focus {
-    outline: none;
-    border-color: var(--color-4);
+.add-idea input::placeholder {
+    color: var(--text-dim);
 }
 
-.add-idea-btn {
-    background: var(--color-4);
-    color: white;
+.add-idea input:focus {
+    outline: 2px solid var(--green);
+}
+
+.add-idea button {
+    background: var(--orange);
     border: none;
+    color: var(--bg);
     width: 36px;
     height: 36px;
     border-radius: 8px;
     font-size: 1.2rem;
     cursor: pointer;
-    transition: transform 0.2s;
+    font-weight: bold;
 }
 
-.add-idea-btn:hover {
-    transform: scale(1.05);
+.add-idea button:hover {
+    filter: brightness(1.1);
 }
 
-/* Settings Menu */
-.settings-menu {
+/* Popup */
+.popup {
     position: fixed;
     top: 0;
-    right: -360px;
-    width: 320px;
+    left: 0;
+    width: 100%;
     height: 100%;
-    background: var(--card-bg);
-    box-shadow: -4px 0 20px rgba(0,0,0,0.1);
-    z-index: 1000;
-    transition: right 0.3s;
-}
-
-.settings-menu.visible {
-    right: 0;
-}
-
-.settings-menu.hidden {
-    right: -360px;
-}
-
-.settings-content {
-    height: 100%;
+    background: rgba(0,0,0,0.7);
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
 }
 
-.settings-header {
+.popup.hidden {
+    display: none;
+}
+
+.popup-content {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 20px;
+    width: 90%;
+    max-width: 320px;
+    animation: popIn 0.2s ease;
+}
+
+@keyframes popIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.popup-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
-    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 16px;
 }
 
-.settings-header h3 {
+.popup-header span {
+    font-weight: 600;
     font-size: 1.1rem;
 }
 
 .close-btn {
     background: none;
     border: none;
+    color: var(--text-dim);
     font-size: 1.5rem;
-    color: var(--text-secondary);
     cursor: pointer;
+    line-height: 1;
 }
 
 .close-btn:hover {
-    color: var(--color-1);
+    color: var(--text);
 }
 
-.settings-body {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-}
-
-.settings-body h4 {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text-secondary);
-    margin-bottom: 12px;
-}
-
-.manage-ritual-item {
+.ritual-row {
     display: flex;
     align-items: center;
-    padding: 10px 12px;
-    background: var(--bg-color);
-    border-radius: 8px;
+    gap: 12px;
+    padding: 12px;
+    background: var(--bg);
+    border-radius: 12px;
     margin-bottom: 8px;
-}
-
-.manage-ritual-color {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin-right: 10px;
-}
-
-.manage-ritual-name {
-    flex: 1;
-    font-size: 0.9rem;
-}
-
-.manage-delete-btn {
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    font-size: 1.1rem;
     cursor: pointer;
-    padding: 2px 6px;
+    transition: all 0.2s;
 }
 
-.manage-delete-btn:hover {
-    color: var(--color-1);
+.ritual-row:hover {
+    background: var(--card-hover);
 }
 
-.add-ritual-row {
+.ritual-check {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: 3px solid;
     display: flex;
-    gap: 8px;
-    margin-top: 12px;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
 }
 
-.add-ritual-row input {
-    flex: 1;
-    padding: 10px 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 0.9rem;
-}
-
-.add-ritual-row input:focus {
-    outline: none;
-    border-color: var(--color-2);
-}
-
-.add-btn {
-    background: var(--color-2);
+.ritual-check.done {
     color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
 }
 
-.add-btn:hover {
-    opacity: 0.9;
+.ritual-check.done::after {
+    content: '✓';
+    font-size: 14px;
+    font-weight: bold;
 }
 
-/* Celebration */
-.celebration {
+.ritual-name {
+    font-weight: 500;
+}
+
+.ritual-row.done .ritual-name {
+    text-decoration: line-through;
+    opacity: 0.5;
+}
+
+/* Settings */
+.settings {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.7);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 2000;
+    z-index: 100;
 }
 
-.celebration.hidden {
+.settings.hidden {
     display: none;
 }
 
-.celebration-content {
-    background: var(--card-bg);
-    padding: 40px 50px;
+.settings-panel {
+    background: var(--card);
     border-radius: 20px;
-    text-align: center;
-    animation: popIn 0.3s ease;
+    padding: 20px;
+    width: 90%;
+    max-width: 320px;
 }
 
-@keyframes popIn {
-    0% { transform: scale(0.8); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
 }
 
-.celebration-emoji {
-    font-size: 3rem;
+.settings-header span {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.settings-body h3 {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
     margin-bottom: 12px;
 }
 
-.celebration-text {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--text-primary);
+.ritual-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--bg);
+    border-radius: 10px;
+    margin-bottom: 6px;
 }
 
-/* Responsive */
-@media (max-width: 700px) {
-    .container {
-        padding: 16px;
-    }
+.ritual-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
 
-    .calendar-header {
-        flex-direction: column;
-        gap: 16px;
-    }
+.ritual-item span {
+    flex: 1;
+    font-size: 0.9rem;
+}
 
-    .daily-panel {
-        max-width: 100%;
-        width: 100%;
-    }
+.ritual-item button {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 1rem;
+    cursor: pointer;
+}
 
-    .calendar-nav {
-        width: 100%;
-        justify-content: space-between;
-    }
+.ritual-item button:hover {
+    color: var(--red);
+}
 
-    .streak-flames {
-        gap: 8px;
-    }
+.add-ritual {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
 
-    .streak-flame {
-        padding: 4px 8px;
-    }
+.add-ritual input {
+    flex: 1;
+    background: var(--bg);
+    border: none;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 0.9rem;
+}
 
-    .stats-donuts {
-        gap: 20px;
-    }
+.add-ritual input::placeholder {
+    color: var(--text-dim);
+}
 
-    .donut-ring {
-        width: 50px;
-        height: 50px;
-    }
+.add-ritual input:focus {
+    outline: 2px solid var(--green);
+}
 
-    .settings-menu {
-        width: 100%;
-        right: -100%;
-    }
+.add-ritual button {
+    background: var(--green);
+    border: none;
+    color: var(--bg);
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
 
-    .settings-menu.visible {
-        right: 0;
-    }
-
-    .settings-menu.hidden {
-        right: -100%;
-    }
+.add-ritual button:hover {
+    filter: brightness(1.1);
 }
