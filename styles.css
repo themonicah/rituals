@@ -107,33 +107,36 @@ h1 {
 }
 
 .icon-btn {
-    background: var(--card);
+    background: transparent;
     border: none;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    font-size: 1.1rem;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: opacity 0.2s;
+    color: var(--text-dim);
+    padding: 4px;
+}
+
+.icon-btn svg {
+    width: 100%;
+    height: 100%;
 }
 
 .icon-btn:hover {
-    background: var(--card-hover);
+    opacity: 0.7;
 }
 
 /* Checklist - Primary Feature */
 .checklist-section {
-    background: var(--card);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 }
 
 .checklist-header {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
-    margin-bottom: 16px;
-    color: var(--text);
+    margin-bottom: 12px;
+    color: var(--text-dim);
 }
 
 .checklist-item {
@@ -189,10 +192,7 @@ h1 {
 
 /* Calendar */
 .calendar-container {
-    background: var(--card);
-    border-radius: 16px;
-    padding: 14px;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 }
 
 .calendar-nav {
@@ -224,22 +224,19 @@ h1 {
 
 .view-toggle {
     display: flex;
-    gap: 4px;
-    margin-bottom: 10px;
-    background: var(--bg);
-    border-radius: 8px;
-    padding: 3px;
+    gap: 8px;
+    margin-bottom: 12px;
+    justify-content: center;
 }
 
 .view-btn {
-    flex: 1;
-    padding: 6px 12px;
+    padding: 4px 12px;
     border: none;
     background: transparent;
     color: var(--text-dim);
     font-size: 0.75rem;
     font-weight: 600;
-    border-radius: 6px;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -372,7 +369,7 @@ h1 {
 .day {
     flex: 1;
     aspect-ratio: 1;
-    background: var(--bg);
+    background: transparent;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
@@ -380,11 +377,11 @@ h1 {
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s;
-    border: 2px solid transparent;
+    border: 2px solid var(--border);
 }
 
 .day:hover {
-    background: var(--card-hover);
+    border-color: var(--text-dim);
     transform: scale(1.05);
 }
 
@@ -394,10 +391,12 @@ h1 {
 
 .day.perfect {
     background: var(--green);
+    border-color: var(--green);
 }
 
 .day.perfect:hover {
     background: var(--green-dark);
+    border-color: var(--green-dark);
 }
 
 .day-name {
@@ -450,19 +449,9 @@ h1 {
     opacity: 1;
 }
 
-/* Bottom Row */
-.bottom-row {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-}
-
 /* Ideas */
 .ideas-section {
-    flex: 1;
-    background: var(--card);
-    border-radius: 16px;
-    padding: 12px;
+    margin-bottom: 80px;
 }
 
 .ideas-header {
@@ -482,10 +471,8 @@ h1 {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 10px;
-    background: var(--bg);
-    border-radius: 8px;
-    margin-bottom: 6px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
 }
 
 .idea-check {
@@ -552,16 +539,16 @@ h1 {
 
 .add-idea {
     display: flex;
-    gap: 6px;
-    margin-top: 8px;
+    gap: 8px;
+    margin-top: 12px;
 }
 
 .add-idea input {
     flex: 1;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    padding: 8px 10px;
-    border-radius: 8px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 8px 0;
     color: var(--text);
     font-size: 0.85rem;
 }
@@ -571,42 +558,48 @@ h1 {
 }
 
 .add-idea input:focus {
-    outline: 2px solid var(--green);
-    border-color: transparent;
+    outline: none;
+    border-bottom-color: var(--green);
 }
 
 .add-idea button {
-    background: var(--orange);
+    background: transparent;
     border: none;
-    color: white;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    font-size: 1.2rem;
+    color: var(--orange);
+    width: 28px;
+    height: 28px;
+    font-size: 1.4rem;
     cursor: pointer;
     font-weight: bold;
 }
 
 .add-idea button:hover {
-    filter: brightness(1.1);
+    opacity: 0.7;
 }
 
-/* Stats */
-.stats-row {
+/* Floating Stats */
+.floating-stats {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
-    flex-direction: column;
-    gap: 8px;
+    gap: 12px;
+    padding: 12px 20px;
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
 
 .stat {
     display: flex;
     align-items: center;
-    gap: 6px;
+    cursor: default;
 }
 
 .mini-donut {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     position: relative;
 }
 

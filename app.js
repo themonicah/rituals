@@ -12,8 +12,9 @@ let currentYear = new Date().getFullYear();
 let selectedDate = getDateStr(new Date()); // Default to today
 let currentView = 'week'; // 'week', 'month', 'year'
 
-// Flat SVG flame icon
+// Flat SVG icons
 const flameIcon = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 23c-4.97 0-9-3.58-9-8 0-2.52 1.17-4.83 3.15-6.35.92-.7 2.15-.2 2.35.9.1.55.33 1.05.68 1.45 1.5-1.5 2.32-3.5 2.32-5.5 0-.55.45-1 1-1 .3 0 .58.14.77.37C15.82 7.63 18 11.27 18 14c0 3.31-2.69 6-6 6v3zm0-4c2.21 0 4-1.79 4-4 0-1.63-.83-3.51-2.2-5.25-.35 1.83-1.27 3.53-2.65 4.82-.73.68-1.83.68-2.55-.02-.68-.66-1.1-1.54-1.24-2.47C6.52 13.17 6 14.55 6 16c0 3.31 2.69 6 6 6v-3z"/></svg>`;
+const gearIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`;
 
 // DOM
 const streaksEl = document.getElementById('streaks');
@@ -28,6 +29,8 @@ const ritualList = document.getElementById('ritual-list');
 
 function init() {
     load();
+    // Set gear icon
+    document.getElementById('settings-btn').innerHTML = gearIcon;
     render();
     setupEvents();
 }
@@ -284,7 +287,7 @@ function renderYearView() {
 }
 
 function renderStats() {
-    const circ = 2 * Math.PI * 10;
+    const circ = 2 * Math.PI * 12;
 
     statsEl.innerHTML = data.rituals.map((r, i) => {
         const addedDate = new Date(r.addedAt);
@@ -306,9 +309,9 @@ function renderStats() {
         return `
             <div class="stat" title="${r.name}: ${pct}% (${completed}/${daysSinceAdded} days)">
                 <div class="mini-donut">
-                    <svg width="28" height="28">
-                        <circle class="bg" cx="14" cy="14" r="10"/>
-                        <circle class="progress" cx="14" cy="14" r="10"
+                    <svg width="32" height="32">
+                        <circle class="bg" cx="16" cy="16" r="12"/>
+                        <circle class="progress" cx="16" cy="16" r="12"
                             stroke="${color}"
                             stroke-dasharray="${circ}"
                             stroke-dashoffset="${offset}"/>
