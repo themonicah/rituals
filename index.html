@@ -14,39 +14,35 @@
             <button id="settings-btn" class="icon-btn" title="Settings">⚙️</button>
         </header>
 
-        <main>
-            <div class="calendar-container">
-                <div class="calendar-nav">
-                    <button id="prev" class="nav-btn">‹</button>
-                    <span id="month-label">December 2025</span>
-                    <button id="next" class="nav-btn">›</button>
-                </div>
-                <div class="week-row" id="calendar"></div>
+        <!-- Today's Checklist - Primary Feature -->
+        <section class="checklist-section">
+            <div class="checklist-header">
+                <span id="checklist-date">Today</span>
             </div>
-
-            <div class="stats-row" id="stats"></div>
-        </main>
-
-        <section class="ideas-section">
-            <div class="ideas-header">
-                <span>Ideas</span>
-            </div>
-            <div id="ideas"></div>
-            <div class="add-idea">
-                <input type="text" id="idea-input" placeholder="Quick note...">
-                <button id="add-idea-btn">+</button>
-            </div>
+            <div id="checklist"></div>
         </section>
-    </div>
 
-    <!-- Day popup -->
-    <div id="day-popup" class="popup hidden">
-        <div class="popup-content">
-            <div class="popup-header">
-                <span id="popup-date"></span>
-                <button id="close-popup" class="close-btn">×</button>
+        <!-- Calendar -->
+        <div class="calendar-container">
+            <div class="calendar-nav">
+                <button id="prev" class="nav-btn">‹</button>
+                <span id="month-label">December 2025</span>
+                <button id="next" class="nav-btn">›</button>
             </div>
-            <div id="popup-rituals"></div>
+            <div class="week-row" id="calendar"></div>
+        </div>
+
+        <!-- Stats & Ideas Row -->
+        <div class="bottom-row">
+            <section class="ideas-section">
+                <div class="ideas-header">Ideas</div>
+                <div id="ideas"></div>
+                <div class="add-idea">
+                    <input type="text" id="idea-input" placeholder="Quick note...">
+                    <button id="add-idea-btn">+</button>
+                </div>
+            </section>
+            <div class="stats-row" id="stats"></div>
         </div>
     </div>
 

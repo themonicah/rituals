@@ -7,7 +7,7 @@ const DEFAULT_RITUALS = [
 
 let data = { rituals: [], completions: {}, ideas: [] };
 let currentWeekStart = getWeekStart(new Date());
-let selectedDate = null;
+let selectedDate = getDateStr(new Date()); // Default to today
 
 // DOM
 const streaksEl = document.getElementById('streaks');
@@ -15,9 +15,8 @@ const calendarEl = document.getElementById('calendar');
 const statsEl = document.getElementById('stats');
 const ideasEl = document.getElementById('ideas');
 const monthLabel = document.getElementById('month-label');
-const popup = document.getElementById('day-popup');
-const popupDate = document.getElementById('popup-date');
-const popupRituals = document.getElementById('popup-rituals');
+const checklistEl = document.getElementById('checklist');
+const checklistDate = document.getElementById('checklist-date');
 const settings = document.getElementById('settings');
 const ritualList = document.getElementById('ritual-list');
 
@@ -67,6 +66,7 @@ function getColor(i) {
 
 function render() {
     renderStreaks();
+    renderChecklist();
     renderCalendar();
     renderStats();
     renderIdeas();
@@ -106,6 +106,31 @@ function calcStreak(name) {
     return streak;
 }
 
+function renderChecklist() {
+    const d = new Date(selectedDate + 'T12:00:00');
+    const today = getDateStr(new Date());
+
+    if (selectedDate === today) {
+        checklistDate.textContent = 'Today';
+    } else {
+        checklistDate.textContent = d.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+    }
+
+    const completed = data.completions[selectedDate] || [];
+
+    checklistEl.innerHTML = data.rituals.map((r, i) => {
+        const done = completed.includes(r.name);
+        const color = getColor(i);
+        return `
+            <div class="checklist-item ${done ? 'done' : ''}" data-name="${r.name}">
+                <div class="checklist-check ${done ? 'done' : ''}"
+                    style="border-color: ${color}; ${done ? `background: ${color}` : ''}"></div>
+                <span class="checklist-name">${r.name}</span>
+            </div>
+        `;
+    }).join('');
+}
+
 function renderCalendar() {
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const today = new Date();
@@ -122,6 +147,7 @@ function renderCalendar() {
         d.setDate(d.getDate() + i);
         const str = getDateStr(d);
         const isToday = str === todayStr;
+        const isSelected = str === selectedDate;
         const completed = data.completions[str] || [];
         const isPerfect = completed.length === data.rituals.length && data.rituals.length > 0;
 
@@ -211,35 +237,7 @@ function renderSettings() {
     `).join('');
 }
 
-function openPopup(dateStr) {
-    selectedDate = dateStr;
-    const d = new Date(dateStr + 'T12:00:00');
-    popupDate.textContent = d.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
-
-    const completed = data.completions[dateStr] || [];
-
-    popupRituals.innerHTML = data.rituals.map((r, i) => {
-        const done = completed.includes(r.name);
-        const color = getColor(i);
-        return `
-            <div class="ritual-row ${done ? 'done' : ''}" data-name="${r.name}">
-                <div class="ritual-check ${done ? 'done' : ''}"
-                    style="border-color: ${color}; ${done ? `background: ${color}` : ''}"></div>
-                <span class="ritual-name">${r.name}</span>
-            </div>
-        `;
-    }).join('');
-
-    popup.classList.remove('hidden');
-}
-
-function closePopup() {
-    popup.classList.add('hidden');
-    selectedDate = null;
-}
-
 function toggleRitual(name) {
-    if (!selectedDate) return;
     if (!data.completions[selectedDate]) data.completions[selectedDate] = [];
 
     const idx = data.completions[selectedDate].indexOf(name);
@@ -250,7 +248,6 @@ function toggleRitual(name) {
     }
 
     save();
-    openPopup(selectedDate); // Refresh popup
     render();
 }
 
@@ -265,18 +262,19 @@ function setupEvents() {
         renderCalendar();
     };
 
-    // Calendar click
+    // Calendar click - select day
     calendarEl.onclick = e => {
         const day = e.target.closest('.day');
-        if (day) openPopup(day.dataset.date);
+        if (day) {
+            selectedDate = day.dataset.date;
+            renderChecklist();
+        }
     };
 
-    // Popup
-    document.getElementById('close-popup').onclick = closePopup;
-    popup.onclick = e => { if (e.target === popup) closePopup(); };
-    popupRituals.onclick = e => {
-        const row = e.target.closest('.ritual-row');
-        if (row) toggleRitual(row.dataset.name);
+    // Checklist toggle
+    checklistEl.onclick = e => {
+        const item = e.target.closest('.checklist-item');
+        if (item) toggleRitual(item.dataset.name);
     };
 
     // Settings
@@ -347,7 +345,6 @@ function setupEvents() {
     // Keyboard
     document.onkeydown = e => {
         if (e.key === 'Escape') {
-            closePopup();
             settings.classList.add('hidden');
         }
     };
