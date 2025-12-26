@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rituals</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <h1>Rituals</h1>
+            </div>
+            <div class="streak-flames" id="streak-flames"></div>
+            <button id="settings-btn" class="settings-btn" title="Settings">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"></path>
+                </svg>
+            </button>
+        </header>
+
+        <!-- Calendar - Hero Section -->
+        <section class="calendar-section">
+            <div class="calendar-header">
+                <div class="calendar-controls">
+                    <div class="view-toggle">
+                        <button class="view-btn active" data-view="week">Week</button>
+                        <button class="view-btn" data-view="month">Month</button>
+                        <button class="view-btn" data-view="year">Year</button>
+                    </div>
+                    <div class="calendar-nav">
+                        <button id="prev-month" class="nav-btn">&lt;</button>
+                        <span id="current-month">December 2025</span>
+                        <button id="next-month" class="nav-btn">&gt;</button>
+                    </div>
+                </div>
+                <div class="daily-panel">
+                    <div class="daily-header">
+                        <span id="selected-date">Today</span>
+                        <div id="completion-badge" class="completion-badge hidden">All done!</div>
+                    </div>
+                    <div id="rituals-list"></div>
+                </div>
+            </div>
+            <div id="week-view" class="week-view"></div>
+            <div id="month-view" class="month-view hidden">
+                <div class="calendar-grid">
+                    <div class="day-header">S</div>
+                    <div class="day-header">M</div>
+                    <div class="day-header">T</div>
+                    <div class="day-header">W</div>
+                    <div class="day-header">T</div>
+                    <div class="day-header">F</div>
+                    <div class="day-header">S</div>
+                    <div id="calendar-days"></div>
+                </div>
+            </div>
+            <div id="year-view" class="year-view hidden"></div>
+            <div class="stats-donuts" id="stats-donuts"></div>
+        </section>
+
+        <!-- Ideas section -->
+        <section id="ideas" class="ideas-section">
+            <h2>Ideas & To-Dos</h2>
+            <div id="ideas-list"></div>
+            <div class="add-idea-row">
+                <input type="text" id="new-idea-input" placeholder="Capture an idea...">
+                <button id="add-idea-btn" class="add-idea-btn">+</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- Settings Menu -->
+    <div id="settings-menu" class="settings-menu hidden">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h3>Settings</h3>
+                <button id="close-settings" class="close-btn">&times;</button>
+            </div>
+            <div class="settings-body">
+                <h4>Manage Rituals</h4>
+                <div id="manage-rituals-list"></div>
+                <div class="add-ritual-row">
+                    <input type="text" id="new-ritual-input" placeholder="Add new ritual...">
+                    <button id="add-ritual-btn" class="add-btn">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Celebration overlay -->
+    <div id="celebration" class="celebration hidden">
+        <div class="celebration-content">
+            <div class="celebration-emoji">✨</div>
+            <p class="celebration-text"></p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
