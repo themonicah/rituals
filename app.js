@@ -362,10 +362,10 @@ function renderStats() {
 
 function renderSettings() {
     ritualList.innerHTML = data.rituals.map((r, i) => `
-        <div class="ritual-item">
+        <div class="ritual-item" data-name="${r.name}">
             <div class="ritual-color" style="background: ${getColor(i)}"></div>
-            <span>${r.name}</span>
-            <button data-name="${r.name}">×</button>
+            <span class="ritual-name-text">${r.name}</span>
+            <button class="ritual-delete" data-name="${r.name}">×</button>
         </div>
     `).join('');
 }
@@ -516,7 +516,7 @@ function setupEvents() {
 
     // Delete ritual
     ritualList.onclick = e => {
-        if (e.target.tagName === 'BUTTON') {
+        if (e.target.classList.contains('ritual-delete')) {
             const name = e.target.dataset.name;
             if (confirm(`Delete "${name}"?`)) {
                 data.rituals = data.rituals.filter(r => r.name !== name);
@@ -525,6 +525,34 @@ function setupEvents() {
                 });
                 save();
                 render();
+            }
+        }
+        // Rename ritual
+        if (e.target.classList.contains('ritual-name-text')) {
+            const item = e.target.closest('.ritual-item');
+            const oldName = item.dataset.name;
+            const newName = prompt('Rename ritual:', oldName);
+            if (newName && newName.trim() && newName.trim().toLowerCase() !== oldName) {
+                const trimmed = newName.trim().toLowerCase();
+                // Check for duplicate
+                if (data.rituals.find(r => r.name === trimmed)) {
+                    alert('A ritual with that name already exists.');
+                    return;
+                }
+                // Update ritual name
+                const ritual = data.rituals.find(r => r.name === oldName);
+                if (ritual) {
+                    ritual.name = trimmed;
+                    // Update all completions
+                    Object.keys(data.completions).forEach(d => {
+                        const idx = data.completions[d].indexOf(oldName);
+                        if (idx !== -1) {
+                            data.completions[d][idx] = trimmed;
+                        }
+                    });
+                    save();
+                    render();
+                }
             }
         }
     };

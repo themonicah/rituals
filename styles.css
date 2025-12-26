@@ -696,9 +696,15 @@ h1 {
     border-radius: 50%;
 }
 
-.ritual-item span {
+.ritual-item .ritual-name-text {
     flex: 1;
     font-size: 0.9rem;
+    cursor: pointer;
+    padding: 4px 0;
+}
+
+.ritual-item .ritual-name-text:hover {
+    color: var(--green);
 }
 
 .ritual-item button {
