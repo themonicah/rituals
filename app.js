@@ -7,7 +7,13 @@ const DEFAULT_RITUALS = [
 
 let data = { rituals: [], completions: {}, ideas: [] };
 let currentWeekStart = getWeekStart(new Date());
+let currentMonth = new Date();
+let currentYear = new Date().getFullYear();
 let selectedDate = getDateStr(new Date()); // Default to today
+let currentView = 'week'; // 'week', 'month', 'year'
+
+// Flat SVG flame icon
+const flameIcon = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 23c-4.97 0-9-3.58-9-8 0-2.52 1.17-4.83 3.15-6.35.92-.7 2.15-.2 2.35.9.1.55.33 1.05.68 1.45 1.5-1.5 2.32-3.5 2.32-5.5 0-.55.45-1 1-1 .3 0 .58.14.77.37C15.82 7.63 18 11.27 18 14c0 3.31-2.69 6-6 6v3zm0-4c2.21 0 4-1.79 4-4 0-1.63-.83-3.51-2.2-5.25-.35 1.83-1.27 3.53-2.65 4.82-.73.68-1.83.68-2.55-.02-.68-.66-1.1-1.54-1.24-2.47C6.52 13.17 6 14.55 6 16c0 3.31 2.69 6 6 6v-3z"/></svg>`;
 
 // DOM
 const streaksEl = document.getElementById('streaks');
@@ -78,14 +84,22 @@ function renderStreaks() {
         const streak = calcStreak(r.name);
         const color = getColor(i);
         const active = streak > 0;
+        const bgColor = hexToRgba(color, 0.15);
         return `
-            <div class="streak ${active ? '' : 'inactive'}">
+            <div class="streak ${active ? '' : 'inactive'}" style="background: ${bgColor}; color: ${color}">
                 <span class="streak-tooltip">${r.name}</span>
-                <span class="streak-icon">🔥</span>
-                <span class="streak-count" style="color: ${active ? color : 'inherit'}">${streak}</span>
+                <span class="streak-icon">${flameIcon}</span>
+                <span class="streak-count">${streak}</span>
             </div>
         `;
     }).join('');
+}
+
+function hexToRgba(hex, alpha) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
 function calcStreak(name) {
@@ -132,6 +146,16 @@ function renderChecklist() {
 }
 
 function renderCalendar() {
+    if (currentView === 'week') {
+        renderWeekView();
+    } else if (currentView === 'month') {
+        renderMonthView();
+    } else {
+        renderYearView();
+    }
+}
+
+function renderWeekView() {
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const today = new Date();
     const todayStr = getDateStr(today);
@@ -141,13 +165,12 @@ function renderCalendar() {
     midWeek.setDate(midWeek.getDate() + 3);
     monthLabel.textContent = midWeek.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
-    let html = '';
+    let html = '<div class="week-row">';
     for (let i = 0; i < 7; i++) {
         const d = new Date(currentWeekStart);
         d.setDate(d.getDate() + i);
         const str = getDateStr(d);
         const isToday = str === todayStr;
-        const isSelected = str === selectedDate;
         const completed = data.completions[str] || [];
         const isPerfect = completed.length === data.rituals.length && data.rituals.length > 0;
 
@@ -164,6 +187,99 @@ function renderCalendar() {
             </div>
         `;
     }
+    html += '</div>';
+    calendarEl.innerHTML = html;
+}
+
+function renderMonthView() {
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const today = new Date();
+    const todayStr = getDateStr(today);
+
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    monthLabel.textContent = currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const startPad = firstDay.getDay();
+
+    let html = '<div class="month-grid">';
+
+    // Day headers
+    dayNames.forEach(name => {
+        html += `<div class="day-header">${name}</div>`;
+    });
+
+    // Empty cells for padding
+    for (let i = 0; i < startPad; i++) {
+        html += '<div class="day empty"></div>';
+    }
+
+    // Days
+    for (let d = 1; d <= lastDay.getDate(); d++) {
+        const date = new Date(year, month, d);
+        const str = getDateStr(date);
+        const isToday = str === todayStr;
+        const completed = data.completions[str] || [];
+        const isPerfect = completed.length === data.rituals.length && data.rituals.length > 0;
+
+        const dots = data.rituals.map((r, idx) => {
+            const done = completed.includes(r.name);
+            return `<div class="dot ${done ? 'done' : ''}" style="background: ${getColor(idx)}"></div>`;
+        }).join('');
+
+        html += `
+            <div class="day ${isToday ? 'today' : ''} ${isPerfect ? 'perfect' : ''}" data-date="${str}">
+                <div class="day-num">${d}</div>
+                <div class="day-dots">${dots}</div>
+            </div>
+        `;
+    }
+
+    html += '</div>';
+    calendarEl.innerHTML = html;
+}
+
+function renderYearView() {
+    const today = new Date();
+    const todayStr = getDateStr(today);
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    monthLabel.textContent = currentYear.toString();
+
+    let html = '<div class="year-grid">';
+
+    for (let month = 0; month < 12; month++) {
+        const firstDay = new Date(currentYear, month, 1);
+        const lastDay = new Date(currentYear, month + 1, 0);
+        const startPad = firstDay.getDay();
+
+        html += `<div class="year-month">`;
+        html += `<div class="year-month-label">${monthNames[month]}</div>`;
+        html += `<div class="year-month-grid">`;
+
+        // Empty cells
+        for (let i = 0; i < startPad; i++) {
+            html += '<div class="year-day empty"></div>';
+        }
+
+        // Days
+        for (let d = 1; d <= lastDay.getDate(); d++) {
+            const date = new Date(currentYear, month, d);
+            const str = getDateStr(date);
+            const isToday = str === todayStr;
+            const completed = data.completions[str] || [];
+            const hasAny = completed.length > 0;
+            const isPerfect = completed.length === data.rituals.length && data.rituals.length > 0;
+
+            html += `<div class="year-day ${isToday ? 'today' : ''} ${isPerfect ? 'perfect' : hasAny ? 'has-completions' : ''}" data-date="${str}"></div>`;
+        }
+
+        html += '</div></div>';
+    }
+
+    html += '</div>';
     calendarEl.innerHTML = html;
 }
 
@@ -254,18 +370,40 @@ function toggleRitual(name) {
 function setupEvents() {
     // Navigation
     document.getElementById('prev').onclick = () => {
-        currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+        if (currentView === 'week') {
+            currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+        } else if (currentView === 'month') {
+            currentMonth.setMonth(currentMonth.getMonth() - 1);
+        } else {
+            currentYear--;
+        }
         renderCalendar();
     };
     document.getElementById('next').onclick = () => {
-        currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+        if (currentView === 'week') {
+            currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+        } else if (currentView === 'month') {
+            currentMonth.setMonth(currentMonth.getMonth() + 1);
+        } else {
+            currentYear++;
+        }
         renderCalendar();
     };
 
+    // View toggle
+    document.querySelectorAll('.view-btn').forEach(btn => {
+        btn.onclick = () => {
+            document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentView = btn.dataset.view;
+            renderCalendar();
+        };
+    });
+
     // Calendar click - select day
     calendarEl.onclick = e => {
-        const day = e.target.closest('.day');
-        if (day) {
+        const day = e.target.closest('.day') || e.target.closest('.year-day');
+        if (day && day.dataset.date) {
             selectedDate = day.dataset.date;
             renderChecklist();
         }
