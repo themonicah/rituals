@@ -1,9 +1,5 @@
 const COLORS = ['#58CC02', '#1CB0F6', '#FF9600', '#CE82FF', '#FF86D0', '#FFC800'];
-const DEFAULT_RITUALS = [
-    { name: 'moving my body', addedAt: new Date().toISOString() },
-    { name: 'draw', addedAt: new Date().toISOString() },
-    { name: 'mascot', addedAt: new Date().toISOString() }
-];
+const DEFAULT_RITUALS = [];
 
 let data = { rituals: [], completions: {} };
 let currentWeekStart = getWeekStart(new Date());
@@ -40,6 +36,9 @@ const viewToggleBtn = document.getElementById('view-toggle-btn');
 const viewDropdown = document.getElementById('view-dropdown');
 const todayBtn = document.getElementById('today-btn');
 const milestoneEl = document.getElementById('milestone');
+const emptyState = document.getElementById('empty-state');
+const checklistSection = document.getElementById('checklist-section');
+const calendarContainer = document.querySelector('.calendar-container');
 
 function init() {
     load();
@@ -90,10 +89,22 @@ function getColor(i) {
 }
 
 function render() {
-    renderStreaks();
-    renderChecklist();
-    renderCalendar();
-    renderStats();
+    const hasRituals = data.rituals.length > 0;
+
+    // Toggle empty state vs main content
+    emptyState.classList.toggle('hidden', hasRituals);
+    checklistSection.classList.toggle('hidden', !hasRituals);
+    calendarContainer.classList.toggle('hidden', !hasRituals);
+    statsEl.classList.toggle('hidden', !hasRituals);
+
+    if (hasRituals) {
+        renderStreaks();
+        renderChecklist();
+        renderCalendar();
+        renderStats();
+    } else {
+        streaksEl.innerHTML = '';
+    }
     renderSettings();
 }
 
@@ -494,6 +505,9 @@ function setupEvents() {
     document.getElementById('settings-btn').onclick = () => settings.classList.remove('hidden');
     document.getElementById('close-settings').onclick = () => settings.classList.add('hidden');
     settings.onclick = e => { if (e.target === settings) settings.classList.add('hidden'); };
+
+    // Empty state add button
+    document.getElementById('empty-add-btn').onclick = () => settings.classList.remove('hidden');
 
     // Add ritual (max 5 for best habit-forming)
     document.getElementById('add-ritual-btn').onclick = () => {
