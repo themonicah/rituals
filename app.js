@@ -16,6 +16,16 @@ let currentView = 'week'; // 'week', 'month', 'year'
 const flameIcon = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 23c-4.97 0-9-3.58-9-8 0-2.52 1.17-4.83 3.15-6.35.92-.7 2.15-.2 2.35.9.1.55.33 1.05.68 1.45 1.5-1.5 2.32-3.5 2.32-5.5 0-.55.45-1 1-1 .3 0 .58.14.77.37C15.82 7.63 18 11.27 18 14c0 3.31-2.69 6-6 6v3zm0-4c2.21 0 4-1.79 4-4 0-1.63-.83-3.51-2.2-5.25-.35 1.83-1.27 3.53-2.65 4.82-.73.68-1.83.68-2.55-.02-.68-.66-1.1-1.54-1.24-2.47C6.52 13.17 6 14.55 6 16c0 3.31 2.69 6 6 6v-3z"/></svg>`;
 const gearIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`;
 const calendarIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`;
+const todayIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+
+const MAX_RITUALS = 5;
+const MILESTONES = [7, 30, 100, 365];
+const MILESTONE_MESSAGES = {
+    7: { icon: '🔥', text: '1 week streak!' },
+    30: { icon: '⭐', text: '30 day streak!' },
+    100: { icon: '💎', text: '100 day streak!' },
+    365: { icon: '👑', text: '1 year streak!' }
+};
 
 // DOM
 const streaksEl = document.getElementById('streaks');
@@ -28,14 +38,18 @@ const settings = document.getElementById('settings');
 const ritualList = document.getElementById('ritual-list');
 const viewToggleBtn = document.getElementById('view-toggle-btn');
 const viewDropdown = document.getElementById('view-dropdown');
+const todayBtn = document.getElementById('today-btn');
+const milestoneEl = document.getElementById('milestone');
 
 function init() {
     load();
     // Set icons
     document.getElementById('settings-btn').innerHTML = gearIcon;
     viewToggleBtn.innerHTML = calendarIcon;
+    todayBtn.innerHTML = todayIcon;
     render();
     setupEvents();
+    checkMilestones();
 }
 
 function load() {
@@ -169,14 +183,32 @@ function renderWeekView() {
     midWeek.setDate(midWeek.getDate() + 3);
     monthLabel.textContent = midWeek.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
+    // Calculate weekly stats
+    let weekComplete = 0;
+    let weekTotal = 0;
+
+    // Track consecutive perfect days for chain
+    let prevPerfect = false;
+
     let html = '<div class="week-row">';
     for (let i = 0; i < 7; i++) {
         const d = new Date(currentWeekStart);
         d.setDate(d.getDate() + i);
         const str = getDateStr(d);
         const isToday = str === todayStr;
+        const isFuture = d > today;
         const completed = data.completions[str] || [];
         const isPerfect = completed.length === data.rituals.length && data.rituals.length > 0;
+
+        // Chain logic: connected if this day and previous day are both perfect
+        const isChained = isPerfect && prevPerfect;
+        prevPerfect = isPerfect;
+
+        // Stats (only count past and today)
+        if (!isFuture) {
+            weekComplete += completed.length;
+            weekTotal += data.rituals.length;
+        }
 
         const dots = data.rituals.map((r, idx) => {
             const done = completed.includes(r.name);
@@ -184,7 +216,7 @@ function renderWeekView() {
         }).join('');
 
         html += `
-            <div class="day ${isToday ? 'today' : ''} ${isPerfect ? 'perfect' : ''}" data-date="${str}">
+            <div class="day ${isToday ? 'today' : ''} ${isPerfect ? 'perfect' : ''} ${isChained ? 'chained' : ''}" data-date="${str}">
                 <div class="day-name">${dayNames[d.getDay()]}</div>
                 <div class="day-num">${d.getDate()}</div>
                 <div class="day-dots">${dots}</div>
@@ -192,6 +224,11 @@ function renderWeekView() {
         `;
     }
     html += '</div>';
+
+    // Weekly summary
+    const weekPct = weekTotal > 0 ? Math.round((weekComplete / weekTotal) * 100) : 0;
+    html += `<div class="weekly-summary">This week: <strong>${weekPct}%</strong> complete</div>`;
+
     calendarEl.innerHTML = html;
 }
 
@@ -337,7 +374,9 @@ function toggleRitual(name) {
     if (!data.completions[selectedDate]) data.completions[selectedDate] = [];
 
     const idx = data.completions[selectedDate].indexOf(name);
-    if (idx === -1) {
+    const wasAdding = idx === -1;
+
+    if (wasAdding) {
         data.completions[selectedDate].push(name);
     } else {
         data.completions[selectedDate].splice(idx, 1);
@@ -345,6 +384,41 @@ function toggleRitual(name) {
 
     save();
     render();
+
+    // Check for milestone after completing a ritual
+    if (wasAdding) {
+        checkMilestones();
+    }
+}
+
+function checkMilestones() {
+    // Check each ritual for milestone streaks
+    data.rituals.forEach(r => {
+        const streak = calcStreak(r.name);
+        const shownKey = `milestone-${r.name}-${streak}`;
+
+        if (MILESTONES.includes(streak) && !localStorage.getItem(shownKey)) {
+            showMilestone(streak, r.name);
+            localStorage.setItem(shownKey, 'true');
+        }
+    });
+}
+
+function showMilestone(days, ritualName) {
+    const msg = MILESTONE_MESSAGES[days];
+    if (!msg) return;
+
+    milestoneEl.querySelector('.milestone-icon').textContent = msg.icon;
+    milestoneEl.querySelector('.milestone-text').innerHTML = `<span>${ritualName}</span><br>${msg.text}`;
+    milestoneEl.classList.remove('hidden');
+
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+        milestoneEl.classList.add('hidden');
+    }, 3000);
+
+    // Click to dismiss
+    milestoneEl.onclick = () => milestoneEl.classList.add('hidden');
 }
 
 function setupEvents() {
@@ -391,6 +465,16 @@ function setupEvents() {
         viewDropdown.classList.add('hidden');
     });
 
+    // Today button - jump to current week/month/year and select today
+    todayBtn.onclick = () => {
+        const today = new Date();
+        currentWeekStart = getWeekStart(today);
+        currentMonth = new Date(today);
+        currentYear = today.getFullYear();
+        selectedDate = getDateStr(today);
+        render();
+    };
+
     // Calendar click - select day
     calendarEl.onclick = e => {
         const day = e.target.closest('.day') || e.target.closest('.year-day');
@@ -411,10 +495,14 @@ function setupEvents() {
     document.getElementById('close-settings').onclick = () => settings.classList.add('hidden');
     settings.onclick = e => { if (e.target === settings) settings.classList.add('hidden'); };
 
-    // Add ritual
+    // Add ritual (max 5 for best habit-forming)
     document.getElementById('add-ritual-btn').onclick = () => {
         const input = document.getElementById('ritual-input');
         const name = input.value.trim().toLowerCase();
+        if (data.rituals.length >= MAX_RITUALS) {
+            alert(`Keep it simple! Max ${MAX_RITUALS} rituals for best results.`);
+            return;
+        }
         if (name && !data.rituals.find(r => r.name === name)) {
             data.rituals.push({ name, addedAt: new Date().toISOString() });
             save();

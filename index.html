@@ -28,13 +28,16 @@
                 <button id="prev" class="nav-btn">‹</button>
                 <span id="month-label">December 2025</span>
                 <button id="next" class="nav-btn">›</button>
-            </div>
-            <div class="view-toggle-wrap">
-                <button id="view-toggle-btn" class="view-toggle-btn"></button>
-                <div class="view-dropdown hidden" id="view-dropdown">
-                    <button class="view-opt active" data-view="week">Week</button>
-                    <button class="view-opt" data-view="month">Month</button>
-                    <button class="view-opt" data-view="year">Year</button>
+                <div class="calendar-actions">
+                    <button id="today-btn" class="cal-icon-btn" title="Today"></button>
+                    <div class="view-toggle-wrap">
+                        <button id="view-toggle-btn" class="cal-icon-btn" title="Change view"></button>
+                        <div class="view-dropdown hidden" id="view-dropdown">
+                            <button class="view-opt active" data-view="week">Week</button>
+                            <button class="view-opt" data-view="month">Month</button>
+                            <button class="view-opt" data-view="year">Year</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div id="calendar"></div>
@@ -44,6 +47,14 @@
 
     <!-- Floating Stats -->
     <div class="floating-stats" id="stats"></div>
+
+    <!-- Milestone Celebration -->
+    <div id="milestone" class="milestone hidden">
+        <div class="milestone-content">
+            <div class="milestone-icon"></div>
+            <div class="milestone-text"></div>
+        </div>
+    </div>
 
     <!-- Settings -->
     <div id="settings" class="settings hidden">

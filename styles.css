@@ -223,13 +223,13 @@ h1 {
     background: var(--card-hover);
 }
 
-.view-toggle-wrap {
-    position: absolute;
-    right: 0;
-    top: 0;
+.calendar-actions {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
 }
 
-.view-toggle-btn {
+.cal-icon-btn {
     width: 28px;
     height: 28px;
     background: transparent;
@@ -237,15 +237,22 @@ h1 {
     color: var(--text-dim);
     cursor: pointer;
     padding: 4px;
+    border-radius: 6px;
+    transition: all 0.2s;
 }
 
-.view-toggle-btn svg {
+.cal-icon-btn svg {
     width: 100%;
     height: 100%;
 }
 
-.view-toggle-btn:hover {
+.cal-icon-btn:hover {
     color: var(--text);
+    background: var(--card);
+}
+
+.view-toggle-wrap {
+    position: relative;
 }
 
 .view-dropdown {
@@ -414,6 +421,7 @@ h1 {
     cursor: pointer;
     transition: all 0.2s;
     border: 2px solid var(--border);
+    position: relative;
 }
 
 .day:hover {
@@ -485,6 +493,89 @@ h1 {
 
 .day.perfect .dot.done {
     opacity: 1;
+}
+
+/* Chain connector for consecutive perfect days */
+.day.chained::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 50%;
+    width: 6px;
+    height: 3px;
+    background: var(--green);
+    transform: translateY(-50%);
+}
+
+.day.chained:first-child::before {
+    display: none;
+}
+
+/* Milestone celebration */
+.milestone {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    animation: fadeIn 0.3s ease;
+}
+
+.milestone.hidden {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.milestone-content {
+    background: white;
+    border-radius: 20px;
+    padding: 32px 48px;
+    text-align: center;
+    animation: popIn 0.4s ease;
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.milestone-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+}
+
+.milestone-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.milestone-text span {
+    color: var(--green);
+}
+
+/* Weekly summary badge */
+.weekly-summary {
+    text-align: center;
+    padding: 12px;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+}
+
+.weekly-summary strong {
+    color: var(--green);
+    font-weight: 700;
 }
 
 /* Floating Stats */
