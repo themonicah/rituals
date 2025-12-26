@@ -227,8 +227,9 @@ function renderChecklist() {
     checklistEl.innerHTML = '<div class="checklist-grid">' + data.rituals.map((r, i) => {
         const done = completed.includes(r.name);
         const icon = getRitualIcon(r.name);
+        const justChecked = justCheckedRitual === r.name;
         return `
-            <div class="checklist-item ${done ? 'done' : ''}" data-name="${r.name}">
+            <div class="checklist-item ${done ? 'done' : ''} ${justChecked ? 'just-checked' : ''}" data-name="${r.name}">
                 <div class="checklist-icon">${icon}</div>
                 <div class="checklist-name">${r.name}</div>
                 <div class="checklist-check ${done ? 'done' : ''}"></div>
@@ -446,7 +447,9 @@ function renderSettings() {
     `).join('');
 }
 
-function toggleRitual(name) {
+let justCheckedRitual = null;
+
+function toggleRitual(name, shouldAnimate = false) {
     if (!data.completions[selectedDate]) data.completions[selectedDate] = [];
 
     const idx = data.completions[selectedDate].indexOf(name);
@@ -454,12 +457,17 @@ function toggleRitual(name) {
 
     if (wasAdding) {
         data.completions[selectedDate].push(name);
+        if (shouldAnimate) justCheckedRitual = name;
     } else {
         data.completions[selectedDate].splice(idx, 1);
+        justCheckedRitual = null;
     }
 
     save();
     render();
+
+    // Clear animation flag after render
+    justCheckedRitual = null;
 
     // Check for milestone after completing a ritual
     if (wasAdding) {
@@ -564,7 +572,10 @@ function setupEvents() {
     // Checklist toggle
     checklistEl.onclick = e => {
         const item = e.target.closest('.checklist-item');
-        if (item) toggleRitual(item.dataset.name);
+        if (item) {
+            const wasChecked = item.classList.contains('done');
+            toggleRitual(item.dataset.name, !wasChecked);
+        }
     };
 
     // Settings

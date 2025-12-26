@@ -234,6 +234,9 @@ h1 {
 .checklist-item.done {
     border-color: var(--blue);
     background: rgba(28, 176, 246, 0.08);
+}
+
+.checklist-item.just-checked {
     animation: checkPop 0.3s ease;
 }
 
